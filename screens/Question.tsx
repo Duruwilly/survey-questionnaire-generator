@@ -3,25 +3,17 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 import Title from '../components/common/Title';
 import Button from '../components/common/Button';
 import { Picker } from '@react-native-picker/picker';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Colors } from '../constants/colors';
-import { addQuestionsToCategory, questionInterface, questionType } from '../redux/slices/questionsSlice';
+import { addQuestionsToCategory, questionInterface, questionType, removeQuestions } from '../redux/slices/questionsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store/store';
 
 const Question = ({ navigation, route }: any) => {
-
+    const { categorizedQuestions } = useSelector((state: RootState) => state.questionReducer)
     const { id, numberOfCategory } = route.params;
 
     const [categoryQst, setCategoryQst] = useState<string>("")
-
-    const questionIdCounter = useRef(1); // Initialize the counter
-
-    const generateUniqueId = () => {
-        const uniqueId = `question-${questionIdCounter.current}`;
-        questionIdCounter.current += 1;
-        return uniqueId;
-    };
 
     const dispatch = useDispatch()
 
@@ -31,7 +23,6 @@ const Question = ({ navigation, route }: any) => {
             inputType: "",
             choices: [],
             required: "",
-            id: ""
         }]
     )
 
@@ -41,7 +32,6 @@ const Question = ({ navigation, route }: any) => {
             inputType: "",
             choices: [],
             required: "",
-            id: generateUniqueId()
         }]);
     };
 
@@ -82,7 +72,6 @@ const Question = ({ navigation, route }: any) => {
 
     const handleNavigate = () => {
         if (id <= numberOfCategory) {
-            dispatch(addQuestionsToCategory({ category: categoryQst, questions }));
             const remainingQuestions = questions.length > 1 ? [questions[0]] : [questions[0]];
 
             if (remainingQuestions.length > 0) {
@@ -96,8 +85,7 @@ const Question = ({ navigation, route }: any) => {
             }
 
             setQuestions(remainingQuestions);
-            // dispatch(updateCategory(categoryQst))
-            // setQuestions([])
+            dispatch(addQuestionsToCategory({ category: categoryQst, questions, id: (id - 1).toString() }));
             setCategoryQst("")
 
         };
@@ -111,11 +99,14 @@ const Question = ({ navigation, route }: any) => {
 
     const handlePreviousQuestion = () => {
         if (id > 1) {
+            dispatch(removeQuestions(Number(id - 2)))
             navigation.navigate('question', { id: id - 1, numberOfCategory });
         } else {
             navigation.goBack()
         }
     }
+
+    console.log(categorizedQuestions);
 
     return (
         <View style={styles.screen}>

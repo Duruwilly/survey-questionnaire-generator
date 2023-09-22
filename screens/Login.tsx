@@ -3,7 +3,7 @@ import { Platform, SafeAreaView, StyleSheet, View } from "react-native"
 import FormInput from "../components/common/InputField"
 import { Picker } from '@react-native-picker/picker';
 import Button from "../components/common/Button";
-import { addUser, userDetails } from "../redux/slices/userSlice";
+import { addUser, logOut, userDetails } from "../redux/slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Title from "../components/common/Title";
 import WarningText from "../components/common/WarningText";
@@ -11,7 +11,6 @@ import { RootState } from "../redux/store/store";
 import { resetCategories } from "../redux/slices/questionsSlice";
 
 const Login = ({ navigation }: any) => {
-    const { role, name } = useSelector((state: RootState) => state.userReducer)
     const { categorizedQuestions } = useSelector((state: RootState) => state.questionReducer)
     const [emptyInputCheck, setEmptyInputCheck] = useState<boolean>(false)
 
@@ -24,20 +23,19 @@ const Login = ({ navigation }: any) => {
 
     const handleChange = (name: keyof userDetails, value: string) => {
         setUser({ ...user, [name]: value });
-        // dispatch(addUser({ name: value, role: value }))
     };
 
     const handleLogin = () => {
+        dispatch(addUser({ name: user.name, role: user.role }))
         if (user.name === "" || user.role === "" || /^\s*$/.test(user.name)) {
             setEmptyInputCheck(true)
             setTimeout(() => {
                 setEmptyInputCheck(false)
             }, 3000)
         } else {
-            // dispatch(resetCategories());
-            dispatch(addUser(user))
-            // setUser({ ...user, name: "", role: "" })
-            navigation.navigate(role === "creator" ? "questionnaireDetails" : "questions", {
+            dispatch(resetCategories());
+            setUser({ ...user, name: "", role: "" })
+            navigation.navigate(user.role === "creator" ? "questionnaireDetails" : "questions", {
                 currentIndex: 0,
                 questionLength: categorizedQuestions.length
             })

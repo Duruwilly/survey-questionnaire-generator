@@ -1,28 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface questionInterface {
-  // category: string;
   question: string;
   inputType: string;
   choices: string[];
   required: string;
-  id: string;
 }
 
 export type questionType = questionInterface[];
 
-export interface categoryInterface {
-  category: string;
-}
-
-export interface categorizedQuestionsInterface {
+export interface categorizedQuestionInterface {
+  id: string;
   category: string;
   questions: questionType;
 }
 
 const initialState = {
-  categories: [] as categoryInterface[],
-  categorizedQuestions: [] as categorizedQuestionsInterface[],
+  categories: [] as string[],
+  categorizedQuestions: [] as categorizedQuestionInterface[],
 };
 
 const questions = createSlice({
@@ -30,16 +25,47 @@ const questions = createSlice({
   initialState,
   reducers: {
     addCategory: (state, action: PayloadAction<string>) => {
-      state.categories.push({ category: action.payload });
+      state.categories.push(action.payload);
     },
     addQuestionsToCategory: (
       state,
-      action: PayloadAction<{ category: string; questions: questionType }>
+      action: PayloadAction<{
+        category: string;
+        questions: questionType;
+        id: string;
+      }>
     ) => {
+      const { category, questions, id } = action.payload;
       state.categorizedQuestions.push({
-        category: action.payload.category,
-        questions: action.payload.questions,
+        id,
+        category,
+        questions,
       });
+    },
+    // removeQuestions: (state, action: PayloadAction<{ categoryId: string }>) => {
+    //   const { categoryId } = action.payload;
+    //   console.log(categoryId);
+
+    //   const questionIndex = state.categorizedQuestions.findIndex(
+    //     (question) => question.id === categoryId
+    //   );
+
+    //   if (questionIndex !== -1) {
+    //     state.categorizedQuestions = state.categorizedQuestions.filter(
+    //       (item) => item.id !== categoryId
+    //     );
+    //   }
+    // },
+    removeQuestions: (state, action: PayloadAction<number>) => {
+      const categoryIndex = action.payload;
+      console.log(categoryIndex);
+
+      if (
+        categoryIndex >= 0 &&
+        categoryIndex < state.categorizedQuestions.length
+      ) {
+        state.categorizedQuestions.splice(categoryIndex, 1);
+      }
     },
     resetCategories: (state) => {
       state.categories = [];
@@ -48,6 +74,10 @@ const questions = createSlice({
   },
 });
 
-export const { addCategory, addQuestionsToCategory, resetCategories } =
-  questions.actions;
+export const {
+  addCategory,
+  addQuestionsToCategory,
+  resetCategories,
+  removeQuestions,
+} = questions.actions;
 export default questions.reducer;
