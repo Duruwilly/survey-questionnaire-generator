@@ -109,12 +109,23 @@ const Question = ({ navigation, route }: any) => {
         }
     }
 
+    const handlePreviousQuestion = () => {
+        if (id > 1) {
+            navigation.navigate('question', { id: id - 1, numberOfCategory });
+        } else {
+            navigation.goBack()
+        }
+    }
+
     return (
         <View style={styles.screen}>
             <ScrollView>
                 <SafeAreaView>
                     <View style={styles.container}>
-                        <Pressable onPress={() => navigation.goBack()} style={[styles.leftIcon]}>
+                        <Pressable onPress={() => {
+                            handlePreviousQuestion()
+                        }}
+                            style={[styles.leftIcon]}>
                             <AntDesign name="arrowleft" size={18} color="black" />
                         </Pressable>
                         <Title>Enter your questions and{'\n'}answers</Title>

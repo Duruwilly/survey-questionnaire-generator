@@ -8,9 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import Title from "../components/common/Title";
 import WarningText from "../components/common/WarningText";
 import { RootState } from "../redux/store/store";
+import { resetCategories } from "../redux/slices/questionsSlice";
 
 const Login = ({ navigation }: any) => {
-    const { role } = useSelector((state: RootState) => state.userReducer)
+    const { role, name } = useSelector((state: RootState) => state.userReducer)
     const { categorizedQuestions } = useSelector((state: RootState) => state.questionReducer)
     const [emptyInputCheck, setEmptyInputCheck] = useState<boolean>(false)
 
@@ -19,11 +20,12 @@ const Login = ({ navigation }: any) => {
         role: ""
     })
 
+    const dispatch = useDispatch()
+
     const handleChange = (name: keyof userDetails, value: string) => {
         setUser({ ...user, [name]: value });
+        // dispatch(addUser({ name: value, role: value }))
     };
-
-    const dispatch = useDispatch()
 
     const handleLogin = () => {
         if (user.name === "" || user.role === "" || /^\s*$/.test(user.name)) {
@@ -32,8 +34,9 @@ const Login = ({ navigation }: any) => {
                 setEmptyInputCheck(false)
             }, 3000)
         } else {
+            // dispatch(resetCategories());
             dispatch(addUser(user))
-            setUser({ ...user, name: "", role: "" })
+            // setUser({ ...user, name: "", role: "" })
             navigation.navigate(role === "creator" ? "questionnaireDetails" : "questions", {
                 currentIndex: 0,
                 questionLength: categorizedQuestions.length

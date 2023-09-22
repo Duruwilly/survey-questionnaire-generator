@@ -6,7 +6,8 @@ import {
     SafeAreaView,
     TextInput,
     ScrollView,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Pressable
 } from 'react-native'
 import Title from '../components/common/Title'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,6 +16,7 @@ import Button from '../components/common/Button';
 import { useState } from 'react';
 import { addSurveyDetails, surveyDetails } from '../redux/slices/surveyDetails';
 import WarningText from '../components/common/WarningText';
+import { AntDesign } from '@expo/vector-icons';
 
 const QuestionnaireDetails = ({ navigation }: any) => {
     const { name } = useSelector((state: RootState) => state.userReducer)
@@ -52,8 +54,14 @@ const QuestionnaireDetails = ({ navigation }: any) => {
             <ScrollView>
                 <KeyboardAvoidingView>
                     <SafeAreaView>
-                        <View style={styles.container}>
-                            <Text style={styles.userName}>Hey {name}</Text>
+                        <Text style={[styles.userName, styles.container]}>Hey {name}</Text>
+                        <View style={{ padding: 24 }}>
+                            <Pressable onPress={() => {
+                                navigation.goBack();
+                            }}
+                                style={[styles.leftIcon]}>
+                                <AntDesign name="arrowleft" size={18} color="black" />
+                            </Pressable>
                             <Title>Enter details and get{'\n'}started</Title>
                             <View style={{ marginTop: 15 }}>
                                 <TextInput
@@ -98,6 +106,7 @@ const styles = StyleSheet.create({
         // paddingHorizontal: 24
     },
     container: {
+        position: "relative",
         padding: 24,
         ...Platform.select({
             ios: {
