@@ -58,7 +58,6 @@ const questions = createSlice({
     // },
     removeQuestions: (state, action: PayloadAction<number>) => {
       const categoryIndex = action.payload;
-      console.log(categoryIndex);
 
       if (
         categoryIndex >= 0 &&

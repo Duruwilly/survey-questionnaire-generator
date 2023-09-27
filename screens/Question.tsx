@@ -85,7 +85,10 @@ const Question = ({ navigation, route }: any) => {
             }
 
             setQuestions(remainingQuestions);
-            dispatch(addQuestionsToCategory({ category: categoryQst, questions, id: (id - 1).toString() }));
+            dispatch(addQuestionsToCategory({
+                category: categoryQst,
+                questions, id: (id - 1).toString()
+            }));
             setCategoryQst("")
 
         };
@@ -119,6 +122,7 @@ const Question = ({ navigation, route }: any) => {
                             style={[styles.leftIcon]}>
                             <AntDesign name="arrowleft" size={18} color="black" />
                         </Pressable>
+                        <Text style={styles.stepsNum}>Step {id} of {numberOfCategory}</Text>
                         <Title>Enter your questions and{'\n'}answers</Title>
                         <View style={{ marginTop: 15 }}>
                             <TextInput
@@ -150,7 +154,7 @@ const Question = ({ navigation, route }: any) => {
                                         <Picker.Item label="checkbox" value="checkbox" />
                                     </Picker>
                                     {
-                                        (question.inputType === "radio" || question.inputType === "checkbox") && (
+                                        ["radio", "checkbox"].includes(question.inputType) && (
                                             <>
                                                 {question.choices.map((choice, choiceIndex) => (
                                                     <View key={choiceIndex}>
@@ -277,5 +281,10 @@ const styles = StyleSheet.create({
         left: 0,
         justifyContent: "center",
         alignItems: "center"
+    },
+    stepsNum: {
+        marginRight: 25,
+        position: "absolute",
+        right: 0,
     },
 })
