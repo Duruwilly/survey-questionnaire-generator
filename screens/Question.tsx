@@ -135,6 +135,7 @@ const Question = ({ navigation, route }: any) => {
                             />
                             {questions.map((question, questionIndex) => (
                                 <View key={questionIndex}>
+                                    <Text style={{ marginTop: 10, fontWeight: "500" }}>{`Question ${questionIndex + 1}`}</Text>
                                     <TextInput
                                         style={styles.input}
                                         placeholder='Question'
